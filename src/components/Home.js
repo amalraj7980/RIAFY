@@ -1,181 +1,123 @@
-import { Text, View, Modal,TouchableOpacity, Pressable,FlatList, StyleSheet, SafeAreaView, TextInput } from 'react-native'
+import {
+    Text, View,
+    Image, ScrollView,
+    StyleSheet, SafeAreaView, TextInput
+} from 'react-native';
+import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import React, { Component } from 'react'
-import { Button,FAB } from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
+import TestJson from '../assects/Test.json';
 export default class Home extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            err: null,
-            data: [],
-            text:"",
-            isLoading: true,
-            modalVisible:false
+            data: [] = TestJson,
+            search: '',
         }
     }
+    updateSearch = (search) => {
+        this.setState({ search });
+    };
     componentDidMount() {
-        this.getallUsers();
     }
-    componentDidUpdate(){
-        this.getallUsers();
-    }
-    setModalVisible = (visible) => {
-        this.setState({ modalVisible: visible });
-      }
-    async getallUsers() {
-        try {
-            const res = await
-                fetch(`https://crudcrud.com/api/56f64c6334334424afa3eef694a80823/test`);
-            const response = await res.json();
-            this.setState({ data: response });
-        }
-        catch (err) {
-            console.log(err);
-        }
-    }
-    async addUser(){
-      const response=  fetch(`https://crudcrud.com/api/56f64c6334334424afa3eef694a80823/test`,{
-            method:"POST",
-            headers:{
-                'Content-Type':'application/json'
-            },
-            body:JSON.stringify({
-                id:'1',
-                name:this.state.text,
-            })
-        })
-        const res= await response.json();
-        if(res&&res.length>0){
-            this.setModalVisible(false);
-        }
-        else{
-            alert("err");
-        }
-      
-        
-    }
-    render() {
-        const { modalVisible } = this.state;
 
-        const { data } = this.state;
+    render() {
+        const { search } = this.state;
         return (
             <>
-                <SafeAreaView style={{ flex: 1 }}>
-                    <FlatList style={styles.list}
-                        data={this.state.data}
-                        renderItem={({ item }) => (
-                        
-                                <View style={styles.card} key={item._id}>
-                                    <Text>User ID :{item._id}</Text>
-                                    <Text>User Name :{item.name}</Text>
-                                </View>
-                        
-                        )} />
-                                            <FAB title="Create"  onPress={() => this.setModalVisible(true)} />
+                <SafeAreaView style={styles.container}>
+                    <View style={{ flex: 1 }}>
+                        <SearchBar
+                            containerStyle={{ height: 80, backgroundColor: '#fff' }}
+                            inputContainerStyle={{backgroundColor:"#F7F7F7"}}
+                            inputStyle={{fontSize:14,fontFamily:'Montserrat-Regular'}}
+                            placeholder="Food name"
+                            placeholderTextColor="#30384d"
+                            lightTheme
+                            platform="ios"
+                            autoFocus={true}
+                            showLoading={false}
+                            autoCorrect={false}
+                            value={this.state.search}
+                            onChangeText={this.updateSearch}
 
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={modalVisible}
-                            onRequestClose={() => {
-                                Alert.alert("Modal has been closed.");
-                                this.setModalVisible(!modalVisible);
-                            }}
-                            >
-                            <View style={styles.centeredView}>
-                                <View style={styles.modalView}>
-                                    <TextInput style={styles.input}/>
-                                    <View style={styles.btnView} 
-                                    onChangeText={text=>{this.setState({text:text}) }}>
-                                    <TouchableOpacity
-                                        style={styles.Addbutton}
-                                        onPress={() => this.addUser()}
-                                        >
-                                        <Text style={{color:"white"}}>Cancel</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                        style={styles.button}
-                                        onPress={() => this.setModalVisible(!modalVisible)}
-                                        >
-                                        <Text style={{color:"white"}}>Cancel</Text>
-                                        </TouchableOpacity>
+                        />
+                        <View style={{ paddingLeft: 15,paddingBottom:10,paddingTop:10 }}>
+                            <Text style={styles.SectionHeader}>Foods</Text>
+                        </View>
+                        <FlatList style={styles.list}
+                            numColumns={2}
+                            scrollEnabled={true}
+                            scrollToItem={false}
+                            data={this.state.data}
+                            renderItem={({ item }) => (<>
+                            <View style={{ margin: 5, flex: 1 }}>
+                                <View style={styles.Products_card}>
+                                    <Image style={styles.Product_image}
+                                        resizeMode="center" source={{ uri: `${item.imageUrl}` }}>
+                                    </Image>
+                                    <View style={{ flex: 1, }}>
+                                        <Text style={styles.ItemName}>{item.Ingredient}</Text>
+                                        <Text style={styles.ItemContent}>{item.Short_text}</Text>
                                     </View>
-                               
                                 </View>
                             </View>
-                            </Modal>
+                            </>
 
-
-
+                            )} />
+                    </View>
                 </SafeAreaView>
-
             </>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        margin: 4,
+        backgroundColor:"#F7F7F7",
+        borderTopWidth:2.5,
+        marginTop:0,
+        borderColor:"#32394E"
+        
+    },
+
+    Products_card: {
+        flex: 1,
+        padding: 5,
+        overflow: "hidden",
+    },
+    Product_image: {
+        height: 120,
+        width: "100%",
+        borderRadius: 7,
+        borderColor: "lightgray",
+        overflow: "hidden"
+    },
+    SectionHeader: {
+        fontSize: 20,
+        color: "#30384d",
+        fontWeight: "bold",
+        fontFamily:'Montserrat-Regular'
+    },
+
+    ItemName: {
+        color: "#30384d",
+        fontWeight: "700",
+        fontSize: 14,
+        paddingTop: 5,
+        paddingBottom: 2,
+        fontFamily:'Montserrat-Regular'
+
+    },
+    ItemContent: {
+        color: "#7e8a9a",
+        fontWeight: "500",
+        fontSize: 12,
+        fontFamily:'Montserrat-Regular'
+    },
     list: {
         flex: 1,
-        margin: 7,
     },
-    input:{
-        height:45,
-        width:"80%",
-        margin:12,
-        borderWidth:0.5,
-        padding:10,borderRadius:10,
-    },
-    card: {
-        flex: 1,
-        margin: 5,
-        borderWidth: 0.5,
-        borderColor: "gray",
-        borderRadius: 8,
-        padding: 5,
-        overflow: 'hidden'
-    },
-    centeredView: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 22
-      },
-    modalView: {
-        width:"80%",
-        height:"40%",
-        margin: 20,
-        backgroundColor: "white",
-        borderRadius: 20,
-        padding: 35,
-        alignItems: "center",
-        shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        elevation: 5
-      },
-      btnView:{
-        width:"85%",
-        flex:1,
-        height:200,
-        alignItems:"center",
-        justifyContent:"space-between"
-      },
-      Addbutton:{
-        borderRadius: 15,
-        padding: 10,
-        elevation: 2,
-        backgroundColor:"#088e7f"
-      },
-      button: {
-        borderRadius: 15,
-        padding: 10,
-        elevation: 2,
-        color:"white",
-        backgroundColor:"gray"
-      },
-    
 })

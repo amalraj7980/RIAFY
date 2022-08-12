@@ -5,7 +5,7 @@ export default class SplashScreen extends Component {
   render() {
     return (
       <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-        <Text style={{fontSize:28,fontWeight:"bold"}}>Kodsmith</Text>
+        <Text style={{fontSize:28,fontWeight:"bold"}}>Riafy Technologies</Text>
       </View>
     )
   }

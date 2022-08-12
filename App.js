@@ -11,14 +11,15 @@ const HomeScreen=()=>(
    screenOptions={({navigation,route})=>({
     headerTitle:(props)=>(<>
     <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-       <Text style={{fontSize:18,color:"#fff",}}>Home</Text>
+       <Text style={{fontSize:20,color:"#30384d",fontWeight:"bold", fontFamily:'Montserrat-Regular'}}>Search</Text>
     </View>
     </>
      ),})}>
       <HomeStack.Screen name="Home" component={Home} options={{
         headerShown:true,
         headerStyle:{
-          backgroundColor:"#007A6D"
+          backgroundColor:"#fff",
+          shadowColor:"#3B4151"
         }
       }}/>
    </HomeStack.Navigator>
@@ -41,7 +42,7 @@ export default class App extends Component {
     }
     return (
       <>   
-      <StatusBar barStyle="dark-content" backgroundColor="#088e7f"/>
+      <StatusBar barStyle="light-content" backgroundColor="gray"/>
        <NavigationContainer>
           <HomeScreen/>
        </NavigationContainer>
